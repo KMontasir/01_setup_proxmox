@@ -21,8 +21,8 @@ iface lo inet loopback
 auto $BOND_INTERFACES_1
 iface $BOND_INTERFACES_1 inet manual
 
-auto BOND_INTERFACES_2
-iface BOND_INTERFACES_2 inet manual
+auto $BOND_INTERFACES_2
+iface $BOND_INTERFACES_2 inet manual
 
 auto $LAN_INTERFACE
 iface $LAN_INTERFACE inet manual
