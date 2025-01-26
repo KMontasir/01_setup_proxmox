@@ -4,7 +4,7 @@
 source ./variables.sh
 source ./functions/setup_storage.sh
 source ./functions/setup_repositories.sh
-source ./functions/setup_openvswitch
+source ./functions/setup_openvswitch.sh
 source ./functions/setup_appliance.sh
 source ./functions/setup_users.sh
 source ./functions/create_vms.sh
