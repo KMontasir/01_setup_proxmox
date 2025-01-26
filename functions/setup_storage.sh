@@ -25,7 +25,6 @@ lvmthin: $storage
     vgname $storage
     thinpool thinpool
     content rootdir,images" >> /etc/pve/storage.cfg
-        fi
 
         echo "Stockage $storage créé avec succès."
         systemctl restart pvedaemon
