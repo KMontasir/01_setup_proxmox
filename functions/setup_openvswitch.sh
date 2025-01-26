@@ -18,13 +18,25 @@ setup_openvswitch() {
 auto lo
 iface lo inet loopback
 
-# Bond0 pour WAN (eno1 + eno2)
+auto $BOND_INTERFACES_1
+iface $BOND_INTERFACES_1 inet manual
+
+auto BOND_INTERFACES_2
+iface BOND_INTERFACES_2 inet manual
+
+auto $LAN_INTERFACE
+iface $LAN_INTERFACE inet manual
+
+auto $ADMIN_INTERFACE
+iface $ADMIN_INTERFACE inet manual
+    
+# Bond0 pour WAN
 auto bond0
 iface bond0 inet manual
     ovs_bonds $BOND_INTERFACES
     ovs_type OVSBond
     ovs_bridge vmbr0
-    ovs_options bond_mode=balance-slb
+    ovs_options bond_mode=active-backup
 
 # Bridge WAN (vmbr0)
 auto vmbr0
