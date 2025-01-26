@@ -145,7 +145,7 @@ EOF
 
 # Proxmox Management Interfaces
 $WAN_IP    $WAN_HOSTNAME.$WAN_DOMAIN $WAN_HOSTNAME
-$LAN_IP    $LAN_HOSTNAME.localdomain $LAN_HOSTNAME
+$LAN_IP    $LAN_HOSTNAME.$LAN_DOMAIN $LAN_HOSTNAME
 EOF
 
     echo "Redémarrage des services réseau..."
