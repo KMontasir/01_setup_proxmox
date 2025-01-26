@@ -33,7 +33,7 @@ iface $ADMIN_INTERFACE inet manual
 # Bond0 pour WAN
 auto bond0
 iface bond0 inet manual
-    ovs_bonds $BOND_INTERFACES
+    ovs_bonds $BOND_INTERFACES_1 $BOND_INTERFACES_2
     ovs_type OVSBond
     ovs_bridge vmbr0
     ovs_options bond_mode=active-backup
