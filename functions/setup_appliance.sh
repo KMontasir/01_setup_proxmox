@@ -12,4 +12,10 @@ setup_appliance() {
     sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
     systemctl restart sshd
     echo "OpenSSH configuré avec succès."
+
+    echo "Création des groupes de ressources..."
+    for pool in pare-feu zone-relais zone-exposee service-interne template testing; do
+        pveum pool add $pool
+    done
+    echo "Groupes de ressources créés avec succès."
 }
