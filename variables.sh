@@ -16,8 +16,8 @@ DEBIAN_ISO=""
 
 # Variables Stockage
 declare -A STORAGE_CONFIGS=(
-    ["local-lvm-vm"]="/dev/sdb"
-    ["local-lvm-pve"]="/dev/sdc"
+    ["local-lvm-pve"]="/dev/sdb"
+    ["local-lvm-vm"]="/dev/sdc"
 )
 
 # Variables Disque pour les VMs
