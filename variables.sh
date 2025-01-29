@@ -10,20 +10,10 @@ declare -A PROXMOX_USERS=(
 PROXMOX_PASSWORD="Azerty/123"
 PVE_PASSWORD="Azerty/123"
 
-# Variables fichiers ISO
-OPNSENSE_ISO=""
-DEBIAN_ISO=""
-
 # Variables Stockage
 declare -A STORAGE_CONFIGS=(
     ["local-lvm-pve"]="/dev/sdb"
     ["local-lvm-vm"]="/dev/sdc"
-)
-
-# Variables Disque pour les VMs
-declare -A DISK_CONFIGS=(
-    ["OpnsenseTemplate"]="16G"
-    ["WebServerTemplate"]="16G"
 )
 
 # Variables réseau
