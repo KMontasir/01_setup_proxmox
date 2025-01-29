@@ -17,7 +17,6 @@ main() {
     setup_openvswitch
     setup_appliance
     setup_users
-    #create_vms
     echo "Configuration terminée avec succès !"
 }
 
