@@ -148,6 +148,8 @@ $WAN_IP    $WAN_HOSTNAME.$WAN_DOMAIN $WAN_HOSTNAME
 $LAN_IP    $LAN_HOSTNAME.$LAN_DOMAIN $LAN_HOSTNAME
 EOF
 
+    ovs-vsctl add-port vmbr4 eno4
+
     echo "Redémarrage des services réseau..."
     systemctl restart networking
 
