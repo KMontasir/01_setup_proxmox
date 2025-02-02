@@ -16,6 +16,9 @@ declare -A STORAGE_CONFIGS=(
     ["local-lvm-vm"]="/dev/sdc"
 )
 
+# Nom d'hôte
+HOSTNAME="pve-1"
+
 # Variables réseau
 CONFIG_FILE="/etc/network/interfaces"
 HOSTS_FILE="/etc/hosts"
@@ -27,10 +30,8 @@ ADMIN_INTERFACE="eno4"              # Interface dédiée à vmbr4
 WAN_IP="172.16.0.5"
 WAN_NETMASK="255.255.255.240"
 WAN_GATEWAY="172.16.0.14"
-HOSTNAME="pve-1"
 WAN_DOMAIN="sun.com"
 
 LAN_IP="172.16.1.250"
 LAN_NETMASK="255.255.255.0"
-HOSTNAME="pve-1"
 LAN_DOMAIN="localdomain"
