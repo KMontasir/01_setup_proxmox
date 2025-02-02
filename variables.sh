@@ -27,10 +27,10 @@ ADMIN_INTERFACE="eno4"              # Interface dédiée à vmbr4
 WAN_IP="172.16.0.5"
 WAN_NETMASK="255.255.255.240"
 WAN_GATEWAY="172.16.0.14"
-WAN_HOSTNAME="pve-1"
+HOSTNAME="pve-1"
 WAN_DOMAIN="sun.com"
 
 LAN_IP="172.16.1.250"
 LAN_NETMASK="255.255.255.0"
-LAN_HOSTNAME="pve-1"
+HOSTNAME="pve-1"
 LAN_DOMAIN="localdomain"
