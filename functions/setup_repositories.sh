@@ -33,7 +33,7 @@ setup_repositories() {
     # Ajouter le dépôt HashiCorp pour Terraform
     echo "Ajout du dépôt HashiCorp..."
     echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
-
+    
     # Mise à jour des dépôts
     echo "Mise à jour des dépôts..."
     apt clean -y
