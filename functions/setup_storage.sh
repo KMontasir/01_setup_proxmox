@@ -1,6 +1,4 @@
-#!/bin/bash
-
-# Fonction pour créer les stockages LVM et la configuration Cloud-init
+# Fonction pour créer les stockages LVM et gérer Cloud-init
 create_lvm() {
     echo "Création des stockages LVM..."
 
@@ -29,29 +27,21 @@ lvmthin: $storage
         echo "Stockage $storage créé avec succès."
     done
 
-    # Après la boucle : création du volume pour Cloud-init
-    echo "Configuration de Cloud-init et du volume snippets..."
-
-    # Volume pour Cloud-init (snippets)
-    storage="local"  # Assurez-vous que 'local' est bien défini dans votre configuration.
-    lvcreate -n cloud_init -L 10G "$storage"
-
-    # Formatage du volume
-    mkfs.ext4 /dev/$storage/cloud_init
-
-    # Création du point de montage
-    mount /dev/$storage/cloud_init /mnt
-
-    # Création du répertoire 'snippets' pour Cloud-init
-    mkdir -p /mnt/snippets
-
-    # Ajouter cette partition au fichier /etc/fstab pour un montage automatique
-    echo "/dev/$storage/cloud_init /mnt ext4 defaults 0 0" >> /etc/fstab
-
-    echo "Volume Cloud-init créé et répertoire 'snippets' configuré."
-
-    echo "Redémarrage des services..."
-    # Redémarrage des services Proxmox
+    # Redémarrage des services une fois que tous les stockages sont créés
     systemctl restart pvedaemon
     systemctl restart pveproxy
+
+    # Création du répertoire pour les snippets si nécessaire
+    echo "Vérification et création du répertoire /var/lib/vz/snippets..."
+    if [ ! -d "/var/lib/vz/snippets" ]; then
+        mkdir -p /var/lib/vz/snippets
+        echo "Répertoire /var/lib/vz/snippets créé."
+    else
+        echo "Le répertoire /var/lib/vz/snippets existe déjà."
+    fi
+
+    # Vous pouvez ici ajouter vos fichiers Cloud-init dans ce répertoire si nécessaire
+    echo "Ajouter vos fichiers Cloud-init dans /var/lib/vz/snippets."
+
+    echo "La gestion des stockages LVM et Cloud-init a été effectuée avec succès."
 }
