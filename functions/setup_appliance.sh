@@ -16,15 +16,6 @@ setup_appliance() {
     systemctl restart sshd || { echo "Erreur de redémarrage SSH"; exit 1; }
     echo "OpenSSH configuré avec succès."
 
-    # Installer et configurer Cloud-Init
-    echo "Installation de Cloud-Init..."
-    if ! dpkg -l | grep -q cloud-init; then
-        apt install cloud-init -y || { echo "Erreur d'installation de Cloud-Init"; exit 1; }
-    fi
-    systemctl enable cloud-init
-    systemctl start cloud-init || { echo "Erreur de démarrage de Cloud-Init"; exit 1; }
-    echo "Cloud-Init installé et activé."
-
     # Installer et configurer Open vSwitch
     echo "Installation d'Open vSwitch..."
     if ! dpkg -l | grep -q openvswitch-switch; then
