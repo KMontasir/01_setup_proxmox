@@ -2,6 +2,13 @@
 
 # Désactivation des dépôts d'entreprise et ajout des dépôts communautaires
 setup_repositories() {
+
+    echo "Création des groupes de ressources..."
+    for pool in pare-feu zone-relais zone-exposee service-interne template testing; do
+        pveum pool add $pool || { echo "Erreur de création du groupe $pool"; exit 1; }
+    done
+    
+    echo "Groupes de ressources créés avec succès."
     echo "Suppression des fichiers de dépôt d'entreprise Proxmox..."
     rm -f /etc/apt/sources.list.d/pve-enterprise.list
     rm -f /etc/apt/sources.list.d/ceph-quincy.list
