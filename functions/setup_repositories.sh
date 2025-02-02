@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# Désactivation des dépôts d'entreprise et ajout des dépôts communautaires
+# Fonction pour configurer les dépôts
 setup_repositories() {
-
     echo "Création des groupes de ressources..."
     for pool in pare-feu zone-relais zone-exposee service-interne template testing; do
         pveum pool add $pool || { echo "Erreur de création du groupe $pool"; exit 1; }
