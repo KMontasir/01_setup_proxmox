@@ -17,17 +17,11 @@ setup_repositories() {
     # Nettoyage des références problématiques pour Proxmox et Ceph
     echo "Nettoyage des références problématiques..."
     sed -i '/enterprise.proxmox.com/d' /etc/apt/sources.list
-    find /etc/apt/sources.list.d/ -name "*.list" -exec sed -i '/ceph-quincy/d' {} \;
+    sed -i '/ceph-quincy/d' /etc/apt/sources.list.d/*.list
     
     # Activation des dépôts non commerciaux de Proxmox
     echo "Activation des dépôts non commerciaux de Proxmox..."
     echo "deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription" > /etc/apt/sources.list.d/pve-no-subscription.list
-    
-    # Ajouter le dépôt HashiCorp pour Terraform
-    echo "Ajout du dépôt HashiCorp..."
-    wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
-    gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
-    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
     
     # Mise à jour des dépôts
     echo "Mise à jour des dépôts..."
@@ -35,4 +29,11 @@ setup_repositories() {
     apt update -y
     apt upgrade -y
     apt autoremove -y
+
+    # Ajouter le dépôt HashiCorp pour Terraform
+    echo "Ajout du dépôt HashiCorp..."
+    wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+    gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
+    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
+    apt update -y
 }
