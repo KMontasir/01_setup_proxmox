@@ -31,6 +31,12 @@ lvmthin: $storage
     systemctl restart pvedaemon
     systemctl restart pveproxy
 
+    # Modification de la configuration du stockage local pour accepter les snippets
+    echo "Modification de la configuration du stockage local pour accepter les snippets..."
+    
+    # Ajouter "snippets" au contenu du stockage local si ce n'est pas déjà fait
+    pvesm set local --content images,rootdir,vztmpl,backup,iso,snippets
+
     # Création du répertoire pour les snippets si nécessaire
     echo "Vérification et création du répertoire /var/lib/vz/snippets..."
     if [ ! -d "/var/lib/vz/snippets" ]; then
@@ -45,3 +51,6 @@ lvmthin: $storage
 
     echo "La gestion des stockages LVM et Cloud-init a été effectuée avec succès."
 }
+
+# Assurez-vous d'utiliser la commande `qm set` pour appliquer les fichiers cloud-init
+# Exemple: qm set 100 --cicustom "user=snippets:snippets/user-data,network=snippets:snippets/network-config,meta=snippets:snippets/meta-data"
