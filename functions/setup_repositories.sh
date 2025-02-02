@@ -35,6 +35,7 @@ setup_repositories() {
 
     # Mise à jour des dépôts
     echo "Mise à jour des dépôts..."
-    apt clean
-    apt update
+    apt clean -y
+    apt update -y
+    apt upgrade -y
 }
