@@ -48,11 +48,6 @@ setup_appliance() {
     fi
     echo "Terraform installé avec succès."
 
-    echo "Création des groupes de ressources..."
-    for pool in pare-feu zone-relais zone-exposee service-interne template testing; do
-        pveum pool add $pool || { echo "Erreur de création du groupe $pool"; exit 1; }
-    done
-    echo "Groupes de ressources créés avec succès."
 }
 
 # Appel de la fonction pour démarrer le processus
