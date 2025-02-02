@@ -38,4 +38,5 @@ setup_repositories() {
     apt clean -y
     apt update -y
     apt upgrade -y
+    apt autoremove -y
 }
