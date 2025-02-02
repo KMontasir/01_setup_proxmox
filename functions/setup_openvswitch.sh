@@ -141,8 +141,8 @@ EOF
     cat <<EOF >> $HOSTS_FILE
 
 # Proxmox Management Interfaces
-$WAN_IP    $WAN_HOSTNAME.$WAN_DOMAIN $WAN_HOSTNAME
-$LAN_IP    $LAN_HOSTNAME.$LAN_DOMAIN $LAN_HOSTNAME
+$WAN_IP    $HOSTNAME.$WAN_DOMAIN $HOSTNAME
+$LAN_IP    $HOSTNAME.$LAN_DOMAIN $HOSTNAME
 EOF
 
     echo "Redémarrage des services réseau... 1/2"
