@@ -14,10 +14,10 @@ setup_repositories() {
     rm -f /etc/apt/sources.list.d/pve-enterprise.list
     rm -f /etc/apt/sources.list.d/ceph-quincy.list
     
-    # Nettoyage des références problématiques
+    # Nettoyage des références problématiques pour Proxmox et Ceph
     echo "Nettoyage des références problématiques..."
     sed -i '/enterprise.proxmox.com/d' /etc/apt/sources.list
-    sed -i '/ceph-quincy/d' /etc/apt/sources.list.d/*.list
+    find /etc/apt/sources.list.d/ -name "*.list" -exec sed -i '/ceph-quincy/d' {} \;
     
     # Activation des dépôts non commerciaux de Proxmox
     echo "Activation des dépôts non commerciaux de Proxmox..."
