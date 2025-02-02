@@ -12,7 +12,7 @@ setup_repositories() {
     # Suppression des fichiers de dépôt d'entreprise Proxmox et ceph-quincy
     echo "Suppression des fichiers de dépôt d'entreprise Proxmox et de ceph-quincy..."
     rm -f /etc/apt/sources.list.d/pve-enterprise.list
-    rm -f /etc/apt/sources.list.d/ceph-quincy.list (ne pas supprimer)
+    rm -f /etc/apt/sources.list.d/ceph-quincy.list
     
     # Nettoyage des références problématiques
     echo "Nettoyage des références problématiques..."
