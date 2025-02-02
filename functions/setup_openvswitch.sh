@@ -148,7 +148,13 @@ $WAN_IP    $WAN_HOSTNAME.$WAN_DOMAIN $WAN_HOSTNAME
 $LAN_IP    $LAN_HOSTNAME.$LAN_DOMAIN $LAN_HOSTNAME
 EOF
 
-    ovs-vsctl add-port vmbr4 eno4
+    # Ajout des interfaces aux bridges OVS
+    ovs-vsctl add-port $WAN_BRIDGE $BOND_INTERFACE_1
+    ovs-vsctl add-port $LAN_BRIDGE $ADMIN_INTERFACE
+    ovs-vsctl add-port $VLAN_BRIDGE $LAN_INTERFACE
+    ovs-vsctl add-port $VLAN_BRIDGE vlan5
+    ovs-vsctl add-port $VLAN_BRIDGE vlan10
+    ovs-vsctl add-port $VLAN_BRIDGE vlan20
 
     echo "Redémarrage des services réseau..."
     systemctl restart networking
