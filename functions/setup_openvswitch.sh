@@ -2,9 +2,6 @@
 
 # Installation et configuration d'Open vSwitch
 setup_openvswitch() {
-    echo "Installation d'Open vSwitch..."
-    apt update && apt install -y openvswitch-switch
-
     echo "Sauvegarde de la configuration réseau actuelle..."
     cp $CONFIG_FILE ${CONFIG_FILE}.backup.$(date +%Y%m%d%H%M%S)
 
