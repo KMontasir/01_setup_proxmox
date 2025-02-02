@@ -27,10 +27,6 @@ lvmthin: $storage
     content rootdir,images" >> /etc/pve/storage.cfg
 
         echo "Stockage $storage créé avec succès."
-
-        # Redémarrage des services Proxmox
-        systemctl restart pvedaemon
-        systemctl restart pveproxy
     done
 
     # Après la boucle : création du volume pour Cloud-init
@@ -53,4 +49,9 @@ lvmthin: $storage
     echo "/dev/$storage/cloud_init /mnt ext4 defaults 0 0" >> /etc/fstab
 
     echo "Volume Cloud-init créé et répertoire 'snippets' configuré."
+
+    echo "Redémarrage des services..."
+    # Redémarrage des services Proxmox
+    systemctl restart pvedaemon
+    systemctl restart pveproxy
 }
