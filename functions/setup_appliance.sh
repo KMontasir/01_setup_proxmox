@@ -25,6 +25,14 @@ setup_appliance() {
     systemctl start cloud-init || { echo "Erreur de démarrage de Cloud-Init"; exit 1; }
     echo "Cloud-Init installé et activé."
 
+    # Installer et configurer Open vSwitch
+    echo "Installation d'Open vSwitch..."
+    if ! dpkg -l | grep -q openvswitch-switch; then
+        apt update && apt install -y openvswitch-switch
+    fi
+    systemctl enable openvswitch-switch
+    systemctl start openvswitch-switch || { echo "Erreur de démarrage du service Open vSwitch"; exit 1; }
+
     # Installer Terraform
     echo "Installation de Terraform..."
     if ! dpkg -l | grep -q terraform; then
