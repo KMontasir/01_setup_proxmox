@@ -37,21 +37,6 @@ setup_appliance() {
     echo "Installation de Terraform..."
     if ! dpkg -l | grep -q terraform; then
         apt-get update && apt-get install -y gnupg software-properties-common curl || { echo "Erreur lors de l'installation des dépendances"; exit 1; }
-        wget -O- https://apt.releases.hashicorp.com/gpg | \
-        gpg --dearmor | \
-        tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
-
-        echo "Vérification de l'empreinte de la clé GPG..."
-        gpg --no-default-keyring \
-        --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
-        --fingerprint || { echo "Erreur de vérification de l'empreinte de la clé"; exit 1; }
-
-        echo "Ajout du dépôt officiel HashiCorp..."
-        echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
-        https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
-        tee /etc/apt/sources.list.d/hashicorp.list
-
-        apt-get update
         apt-get install terraform -y || { echo "Erreur d'installation de Terraform"; exit 1; }
     fi
     echo "Terraform installé avec succès."
