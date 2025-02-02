@@ -14,8 +14,8 @@ main() {
     echo "Début de la configuration..."
     create_lvm
     setup_repositories
-    setup_openvswitch
     setup_appliance
+    setup_openvswitch
     setup_users
     echo "Configuration terminée avec succès !"
 }
