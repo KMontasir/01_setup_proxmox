@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Fonction pour créer les stockages LVM
+# Fonction pour créer les stockages LVM et la configuration Cloud-init
 create_lvm() {
     echo "Création des stockages LVM..."
 
@@ -20,14 +20,37 @@ create_lvm() {
         lvcreate --type thin-pool -l 100%FREE -n thinpool "$storage"
 
         # Ajout de la configuration dans le fichier /etc/pve/storage.cfg
-            echo "
+        echo "
 lvmthin: $storage
     vgname $storage
     thinpool thinpool
     content rootdir,images" >> /etc/pve/storage.cfg
 
         echo "Stockage $storage créé avec succès."
+
+        # Redémarrage des services Proxmox
         systemctl restart pvedaemon
         systemctl restart pveproxy
     done
+
+    # Après la boucle : création du volume pour Cloud-init
+    echo "Configuration de Cloud-init et du volume snippets..."
+
+    # Volume pour Cloud-init (snippets)
+    storage="local"  # Assurez-vous que 'local' est bien défini dans votre configuration.
+    lvcreate -n cloud_init -L 10G "$storage"
+
+    # Formatage du volume
+    mkfs.ext4 /dev/$storage/cloud_init
+
+    # Création du point de montage
+    mount /dev/$storage/cloud_init /mnt
+
+    # Création du répertoire 'snippets' pour Cloud-init
+    mkdir -p /mnt/snippets
+
+    # Ajouter cette partition au fichier /etc/fstab pour un montage automatique
+    echo "/dev/$storage/cloud_init /mnt ext4 defaults 0 0" >> /etc/fstab
+
+    echo "Volume Cloud-init créé et répertoire 'snippets' configuré."
 }
