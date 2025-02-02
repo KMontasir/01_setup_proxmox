@@ -148,6 +148,9 @@ $WAN_IP    $WAN_HOSTNAME.$WAN_DOMAIN $WAN_HOSTNAME
 $LAN_IP    $LAN_HOSTNAME.$LAN_DOMAIN $LAN_HOSTNAME
 EOF
 
+    echo "Redémarrage des services réseau... 1/2"
+    systemctl restart networking
+    
     # Ajout des interfaces aux bridges OVS
     ovs-vsctl add-port vmbr4 $ADMIN_INTERFACE
     ovs-vsctl add-port vmbr3 $LAN_INTERFACE
@@ -159,7 +162,7 @@ EOF
     ovs-vsctl add-port vmbr1 vlan50
     ovs-vsctl add-port vmbr1 vlan60
 
-    echo "Redémarrage des services réseau..."
+    echo "Redémarrage des services réseau... 2/2"
     systemctl restart networking
 
     echo "Configuration Open vSwitch terminée."
