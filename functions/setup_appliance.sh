@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Fonction pour installer et configurer OpenSSH, Open vSwitch, Cloud-Init et Terraform
+# Fonction pour installer et configurer OpenSSH, Cloud-Init, Terraform
 setup_appliance() {
     # Installer et configurer OpenSSH
     echo "Installation et configuration d'OpenSSH..."
@@ -47,8 +47,4 @@ setup_appliance() {
         apt-get install terraform -y || { echo "Erreur d'installation de Terraform"; exit 1; }
     fi
     echo "Terraform installé avec succès."
-
 }
-
-# Appel de la fonction pour démarrer le processus
-setup_appliance
