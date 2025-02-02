@@ -146,6 +146,7 @@ $LAN_IP    $LAN_HOSTNAME.$LAN_DOMAIN $LAN_HOSTNAME
 EOF
 
     echo "Redémarrage des services réseau... 1/2"
+    systemctl restart openvswitch-switch
     systemctl restart networking
 
     echo "Ajout des interfaces aux bridges OVS"
@@ -161,6 +162,7 @@ EOF
     ovs-vsctl add-port vmbr1 vlan60
 
     echo "Redémarrage des services réseau... 2/2"
+    systemctl restart openvswitch-switch
     systemctl restart networking
 
     echo "Configuration Open vSwitch terminée."
