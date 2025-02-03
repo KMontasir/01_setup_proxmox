@@ -35,8 +35,8 @@ lvmthin: $storage
     echo "Modification de la configuration du stockage local pour accepter les snippets..."
     
     # Ajouter "snippets" au contenu du stockage local si ce n'est pas déjà fait
-    pvesm set local --content images,rootdir,vztmpl,backup,iso,snippets
-    pvesm add dir snippets --path /var/lib/vz/ --content snippets
+    #pvesm set local --content images,rootdir,vztmpl,backup,iso
+    pvesm add dir snippets --path /var/lib/vz/ --content images,iso,snippets
 
     # Création du répertoire pour les snippets si nécessaire
     echo "Vérification et création du répertoire /var/lib/vz/snippets..."
