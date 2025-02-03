@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 # Fonction pour configurer les dépôts
