@@ -142,13 +142,6 @@ EOF
     ovs-vsctl add-port vmbr0 bond0
     ovs-vsctl add-port vmbr4 $ADMIN_INTERFACE
     ovs-vsctl add-port vmbr3 $LAN_INTERFACE
-    ovs-vsctl add-port vmbr3 vlan5
-    ovs-vsctl add-port vmbr3 vlan10
-    ovs-vsctl add-port vmbr3 vlan20
-    ovs-vsctl add-port vmbr2 vlan30
-    ovs-vsctl add-port vmbr2 vlan40
-    ovs-vsctl add-port vmbr1 vlan50
-    ovs-vsctl add-port vmbr1 vlan60
 
     echo "Redémarrage des services réseau... 2/2"
     systemctl restart openvswitch-switch
