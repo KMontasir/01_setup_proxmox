@@ -150,5 +150,3 @@ EOF
     echo "Configuration Open vSwitch terminée."
     echo "Vérifiez la configuration avec 'ovs-vsctl show' et 'ip a'."
 }
-
-setup_openvswitch
