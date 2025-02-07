@@ -13,8 +13,8 @@ PVE_PASSWORD="Azerty/123"
 # Variables Stockage
 DISK1="/dev/sdc"                       # Disque pour les VM et Cloud-init
 DISK2="/dev/sdb"                       # Disque pour les installations de PVE
-VM_STORAGE_NAME="vm_storage_sdc"       # Nom du groupe de volumes pour les VM et Cloud-init
-PVE_STORAGE_NAME="pve_storage_sdb"     # Nom du groupe de volumes pour les installations PVE
+VM_STORAGE_NAME="local-lvm-vm"       # Nom du groupe de volumes pour les VM et Cloud-init
+PVE_STORAGE_NAME="local-lvm-pve"     # Nom du groupe de volumes pour les installations PVE
 THINPOOL_NAME="thinpool"               # Nom du thin pool
 VM_SIZE="100%FREE"                     # Taille du volume pour les VM
 PVE1_SIZE="10G"                        # Taille du volume pour le premier PVE
