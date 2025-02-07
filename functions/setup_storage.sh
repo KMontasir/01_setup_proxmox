@@ -1,57 +1,61 @@
-# Fonction pour créer les stockages LVM et gérer Cloud-init
-create_lvm() {
-    echo "Création des stockages LVM..."
+#!/bin/bash
 
-    # Boucle sur chaque stockage défini dans STORAGE_CONFIGS
-    for storage in "${!STORAGE_CONFIGS[@]}"; do
-        disk="${STORAGE_CONFIGS[$storage]}"
+# Créez l'ISO Cloud-Init ici
+cloud-init init --config-file=user-data --meta-data=meta-data --output-dir=/tmp/cloud-init-iso
 
-        echo "Traitement du stockage: $storage ($disk)"
+# Fonction pour créer le template avec l'image FreeBSD
+create_template() {
+    local id=$1
+    local name=$2
+    local url=$3
+    local img_file=$(basename "$url")
 
-        # Nettoyage du disque
-        wipefs -a "$disk"
-
-        # Création du groupe de volumes
-        vgcreate "$storage" "$disk"
-
-        # Création du volume thin-pool
-        lvcreate --type thin-pool -l 100%FREE -n thinpool "$storage"
-
-        # Ajout de la configuration dans le fichier /etc/pve/storage.cfg
-        echo "
-lvmthin: $storage
-    vgname $storage
-    thinpool thinpool
-    content rootdir,images,snippets" >> /etc/pve/storage.cfg
-
-        echo "Stockage $storage créé avec succès."
-    done
-
-    # Redémarrage des services une fois que tous les stockages sont créés
-    systemctl restart pvedaemon
-    systemctl restart pveproxy
-
-    # Modification de la configuration du stockage local pour accepter les snippets
-    echo "Modification de la configuration du stockage local pour accepter les snippets..."
-    
-    # Ajouter "snippets" au contenu du stockage local si ce n'est pas déjà fait
-    #pvesm set local --content images,rootdir,vztmpl,backup,iso
-    pvesm add dir snippets --path /var/lib/vz/ --content images,iso,snippets
-
-    # Création du répertoire pour les snippets si nécessaire
-    echo "Vérification et création du répertoire /var/lib/vz/snippets..."
-    if [ ! -d "/var/lib/vz/snippets" ]; then
-        mkdir -p /var/lib/vz/snippets
-        echo "Répertoire /var/lib/vz/snippets créé."
-    else
-        echo "Le répertoire /var/lib/vz/snippets existe déjà."
+    # Vérifier si l'image est compressée en .xz
+    if [[ "$img_file" == *.xz ]]; then
+        local img_uncompressed="${img_file%.xz}"  # Supprime l'extension .xz
+        # Décompresser l'image si nécessaire
+        echo "Décompression de l'image..."
+        unxz -k "$TEMPLATE_DIR/$name/$img_file"
+        img_file="$img_uncompressed"
     fi
 
-    # Vous pouvez ici ajouter vos fichiers Cloud-init dans ce répertoire si nécessaire
-    echo "Ajouter vos fichiers Cloud-init dans /var/lib/vz/snippets."
+    # Création de la VM sans disque
+    qm create "$id" --name "$name" --net0 virtio,bridge="$BRIDGE" --scsihw virtio-scsi-single --bios seabios
 
-    echo "La gestion des stockages LVM et Cloud-init a été effectuée avec succès."
+    # Importer l'image dans le stockage pve_storage_sdb
+    qm importdisk "$id" "$TEMPLATE_DIR/$name/$img_file" "$STORAGE_POOL"
+
+    # Lier le disque importé à la VM
+    qm set "$id" --scsi0 "${STORAGE_POOL}:vm-${id}-disk-0"
+
+    # Redimensionner le disque
+    qm disk resize "$id" scsi0 "$DISK_SIZE"
+
+    # Configurer l'ordre de démarrage
+    qm set "$id" --boot order=scsi0 --bios seabios
+
+    # Configuration des ressources de la VM
+    qm set "$id" --cpu host --cores "$CORES" --memory "$MEMORY"
+
+    # Ajouter l'ISO Cloud-Init
+    qm set "$id" --ide2 "$STORAGE_POOL:/tmp/cloud-init-iso/cloud-init.iso,media=cdrom"
+
+    # Activer l'agent QEMU
+    qm set "$id" --agent enabled=1
+
+    # Appliquer la configuration Cloud-Init (en utilisant les fichiers dans le répertoire snippets)
+    qm set "$id" --cicustom "user=$SNIPPETS_DIR/user-data,meta=$SNIPPETS_DIR/meta-data"
+
+    # Marquer cette VM comme un template
+    qm template "$id"
+
+    # Ajouter la VM au pool "template"
+    pvesh set /pools/"$POOL_TEMPLATE" -vms "$id"
+
+    echo "Fin de création du template $name et ajout au pool $POOL_TEMPLATE"
 }
 
-# Assurez-vous d'utiliser la commande `qm set` pour appliquer les fichiers cloud-init
-# Exemple: qm set 100 --cicustom "user=snippets:snippets/user-data,network=snippets:snippets/network-config,meta=snippets:snippets/meta-data"
+# Créer le template avec l'image FreeBSD
+create_template 9999 "freebsd-14-cloudinit" "$IMAGE_URL"
+
+echo "Fin de création du paramétrage de base de Proxmox avec le template FreeBSD 14.2"
