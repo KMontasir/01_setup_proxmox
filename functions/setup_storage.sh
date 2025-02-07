@@ -19,7 +19,7 @@ create_lvm() {
 lvmthin: $VM_STORAGE_NAME
     vgname $VM_STORAGE_NAME
     thinpool $THINPOOL_NAME
-    content rootdir,images" >> /etc/pve/storage.cfg
+    content rootdir,images,snippets" >> /etc/pve/storage.cfg
 
     echo "Stockage $VM_STORAGE_NAME créé avec succès."
 
