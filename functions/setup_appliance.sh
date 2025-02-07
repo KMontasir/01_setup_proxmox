@@ -31,4 +31,11 @@ setup_appliance() {
         apt-get install terraform -y || { echo "Erreur d'installation de Terraform"; exit 1; }
     fi
     echo "Terraform installé avec succès."
+
+    # Installer Cloud-init
+    echo "Installation de Cloud-init..."
+    if ! dpkg -l | grep -q cloud-init; then
+        apt-get install cloud-init -y || { echo "Erreur d'installation de Cloud-init"; exit 1; }
+    fi
+    echo "Cloud-init installé avec succès."
 }
