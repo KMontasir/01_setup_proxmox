@@ -139,7 +139,6 @@ EOF
     systemctl restart networking
 
     echo "Ajout des interfaces aux bridges OVS"
-    ovs-vsctl add-port vmbr0 bond0
     ovs-vsctl add-port vmbr4 $ADMIN_INTERFACE
     ovs-vsctl add-port vmbr3 $LAN_INTERFACE
 
