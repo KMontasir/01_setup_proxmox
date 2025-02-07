@@ -11,10 +11,15 @@ PROXMOX_PASSWORD="Azerty/123"
 PVE_PASSWORD="Azerty/123"
 
 # Variables Stockage
-declare -A STORAGE_CONFIGS=(
-    ["local-lvm-pve"]="/dev/sdb"
-    ["local-lvm-vm"]="/dev/sdc"
-)
+DISK1="/dev/sdc"                       # Disque pour les VM et Cloud-init
+DISK2="/dev/sdb"                       # Disque pour les installations de PVE
+VM_STORAGE_NAME="vm_storage_sdc"       # Nom du groupe de volumes pour les VM et Cloud-init
+PVE_STORAGE_NAME="pve_storage_sdb"     # Nom du groupe de volumes pour les installations PVE
+THINPOOL_NAME="thinpool"               # Nom du thin pool
+VM_SIZE="100%FREE"                     # Taille du volume pour les VM
+PVE1_SIZE="10G"                        # Taille du volume pour le premier PVE
+PVE2_SIZE="10G"                        # Taille du volume pour le deuxième PVE
+SNIPPETS_DIR="/var/lib/vz/snippets"    # Répertoire pour les fichiers Cloud-init (par défaut)
 
 # Nom d'hôte
 HOSTNAME="pve-1"
