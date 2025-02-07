@@ -22,7 +22,7 @@ create_lvm() {
 lvmthin: $storage
     vgname $storage
     thinpool thinpool
-    content rootdir,images" >> /etc/pve/storage.cfg
+    content rootdir,images,snippets" >> /etc/pve/storage.cfg
 
         echo "Stockage $storage créé avec succès."
     done
