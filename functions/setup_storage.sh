@@ -1,61 +1,69 @@
 #!/bin/bash
 
-# Créez l'ISO Cloud-Init ici
-cloud-init init --config-file=user-data --meta-data=meta-data --output-dir=/tmp/cloud-init-iso
+# Fonction pour créer les stockages LVM et gérer Cloud-init
+create_lvm() {
+    echo "Création des stockages LVM..."
 
-# Fonction pour créer le template avec l'image FreeBSD
-create_template() {
-    local id=$1
-    local name=$2
-    local url=$3
-    local img_file=$(basename "$url")
+    # Traitement du disque /dev/sdb (pour les VM et Cloud-init)
+    echo "Traitement du disque: $DISK1"
+    wipefs -a "$DISK1" # Nettoyage du disque /dev/sdb
+    
+    # Création du groupe de volumes pour les VM et Cloud-init
+    vgcreate "$VM_STORAGE_NAME" "$DISK1"
 
-    # Vérifier si l'image est compressée en .xz
-    if [[ "$img_file" == *.xz ]]; then
-        local img_uncompressed="${img_file%.xz}"  # Supprime l'extension .xz
-        # Décompresser l'image si nécessaire
-        echo "Décompression de l'image..."
-        unxz -k "$TEMPLATE_DIR/$name/$img_file"
-        img_file="$img_uncompressed"
+    # Création du volume thin-pool pour les VM
+    lvcreate --type thin-pool -l "$VM_SIZE" -n "$THINPOOL_NAME" "$VM_STORAGE_NAME"
+
+    # Ajout de la configuration dans le fichier /etc/pve/storage.cfg
+    echo "
+lvmthin: $VM_STORAGE_NAME
+    vgname $VM_STORAGE_NAME
+    thinpool $THINPOOL_NAME
+    content rootdir,images" >> /etc/pve/storage.cfg
+
+    echo "Stockage $VM_STORAGE_NAME créé avec succès."
+
+    # Traitement du disque /dev/sdc (pour les PVE)
+    echo "Traitement du disque: $DISK2"
+    wipefs -a "$DISK2" # Nettoyage du disque /dev/sdc
+    
+    # Création du groupe de volumes pour les installations de PVE
+    vgcreate "$PVE_STORAGE_NAME" "$DISK2"
+
+    # Création des volumes logiques pour chaque PVE (pve1 et pve2)
+    lvcreate -n pve1 -L "$PVE1_SIZE" "$PVE_STORAGE_NAME"  # Par exemple, 50 Go pour le premier PVE
+    lvcreate -n pve2 -L "$PVE2_SIZE" "$PVE_STORAGE_NAME"  # Par exemple, 50 Go pour le deuxième PVE
+
+    # Ajout des volumes dans la configuration de stockage
+    echo "
+lvm: $PVE_STORAGE_NAME
+    vgname $PVE_STORAGE_NAME
+    content rootdir,images" >> /etc/pve/storage.cfg
+
+    echo "Stockage $PVE_STORAGE_NAME créé avec succès."
+
+    # Redémarrage des services une fois que tous les stockages sont créés
+    systemctl restart pvedaemon
+    systemctl restart pveproxy
+
+    # Modification de la configuration du stockage local pour accepter les snippets
+    echo "Modification de la configuration du stockage local pour accepter les snippets..."
+    pvesm add dir snippets --path "$SNIPPETS_DIR" --content images,iso,snippets
+
+    # Création du répertoire pour les snippets si nécessaire
+    echo "Vérification et création du répertoire $SNIPPETS_DIR..."
+    if [ ! -d "$SNIPPETS_DIR" ]; then
+        mkdir -p "$SNIPPETS_DIR"
+        echo "Répertoire $SNIPPETS_DIR créé."
+    else
+        echo "Le répertoire $SNIPPETS_DIR existe déjà."
     fi
 
-    # Création de la VM sans disque
-    qm create "$id" --name "$name" --net0 virtio,bridge="$BRIDGE" --scsihw virtio-scsi-single --bios seabios
+    # Vous pouvez ici ajouter vos fichiers Cloud-init dans ce répertoire si nécessaire
+    echo "Ajouter vos fichiers Cloud-init dans $SNIPPETS_DIR."
 
-    # Importer l'image dans le stockage pve_storage_sdb
-    qm importdisk "$id" "$TEMPLATE_DIR/$name/$img_file" "$STORAGE_POOL"
-
-    # Lier le disque importé à la VM
-    qm set "$id" --scsi0 "${STORAGE_POOL}:vm-${id}-disk-0"
-
-    # Redimensionner le disque
-    qm disk resize "$id" scsi0 "$DISK_SIZE"
-
-    # Configurer l'ordre de démarrage
-    qm set "$id" --boot order=scsi0 --bios seabios
-
-    # Configuration des ressources de la VM
-    qm set "$id" --cpu host --cores "$CORES" --memory "$MEMORY"
-
-    # Ajouter l'ISO Cloud-Init
-    qm set "$id" --ide2 "$STORAGE_POOL:/tmp/cloud-init-iso/cloud-init.iso,media=cdrom"
-
-    # Activer l'agent QEMU
-    qm set "$id" --agent enabled=1
-
-    # Appliquer la configuration Cloud-Init (en utilisant les fichiers dans le répertoire snippets)
-    qm set "$id" --cicustom "user=$SNIPPETS_DIR/user-data,meta=$SNIPPETS_DIR/meta-data"
-
-    # Marquer cette VM comme un template
-    qm template "$id"
-
-    # Ajouter la VM au pool "template"
-    pvesh set /pools/"$POOL_TEMPLATE" -vms "$id"
-
-    echo "Fin de création du template $name et ajout au pool $POOL_TEMPLATE"
+    echo "La gestion des stockages LVM et Cloud-init a été effectuée avec succès."
 }
 
-# Créer le template avec l'image FreeBSD
-create_template 9999 "freebsd-14-cloudinit" "$IMAGE_URL"
-
-echo "Fin de création du paramétrage de base de Proxmox avec le template FreeBSD 14.2"
+# Assurez-vous d'utiliser la commande `qm set` pour appliquer les fichiers cloud-init
+# Exemple: qm set 100 --cicustom "user=$SNIPPETS_DIR/user-data,network=$SNIPPETS_DIR/network-config,meta=$SNIPPETS_DIR/meta-data"
