@@ -49,7 +49,6 @@ lvm: $PVE_STORAGE_NAME
     # Modification de la configuration du stockage local pour accepter les snippets
     echo "Modification de la configuration du stockage local pour accepter les snippets..."
     pvesm set local --content images,iso,rootdir,vztmpl,backup,snippets
-    pvesm add dir snippets --path "$SNIPPETS_DIR" --content images,iso,snippets
 
     # Création du répertoire pour les snippets si nécessaire
     echo "Vérification et création du répertoire $SNIPPETS_DIR..."
@@ -59,6 +58,8 @@ lvm: $PVE_STORAGE_NAME
     else
         echo "Le répertoire $SNIPPETS_DIR existe déjà."
     fi
+
+    pvesm add dir snippets --path "$SNIPPETS_DIR" --content images,iso,snippets
 
     # Vous pouvez ici ajouter vos fichiers Cloud-init dans ce répertoire si nécessaire
     echo "Ajouter vos fichiers Cloud-init dans $SNIPPETS_DIR."
