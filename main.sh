@@ -16,6 +16,8 @@ main() {
     setup_appliance
     setup_openvswitch
     setup_users
+    
+    systemctl restart pve-cluster
     echo "Configuration terminée avec succès !"
 }
 
