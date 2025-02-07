@@ -19,7 +19,7 @@ create_lvm() {
 lvmthin: $VM_STORAGE_NAME
     vgname $VM_STORAGE_NAME
     thinpool $THINPOOL_NAME
-    content rootdir,images,snippets" >> /etc/pve/storage.cfg
+    content rootdir,images" >> /etc/pve/storage.cfg
 
     echo "Stockage $VM_STORAGE_NAME créé avec succès."
 
@@ -48,6 +48,7 @@ lvm: $PVE_STORAGE_NAME
 
     # Modification de la configuration du stockage local pour accepter les snippets
     echo "Modification de la configuration du stockage local pour accepter les snippets..."
+    pvesm set local --content images,iso,rootdir,vztmpl,backup,snippets
     pvesm add dir snippets --path "$SNIPPETS_DIR" --content images,iso,snippets
 
     # Création du répertoire pour les snippets si nécessaire
