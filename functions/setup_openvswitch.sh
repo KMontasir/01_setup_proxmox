@@ -18,12 +18,12 @@ iface lo inet loopback
 auto $BOND_INTERFACES_1
 iface $BOND_INTERFACES_1 inet manual
 	ovs_type OVSPort
-	ovs_bridge vmbr0
+	ovs_bridge bond0
 
 auto $BOND_INTERFACES_2
 iface $BOND_INTERFACES_2 inet manual
 	ovs_type OVSPort
-	ovs_bridge vmbr0
+	ovs_bridge bond0
 
 auto $LAN_INTERFACE
 iface $LAN_INTERFACE inet manual
