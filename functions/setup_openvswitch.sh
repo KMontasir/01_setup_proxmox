@@ -17,15 +17,23 @@ iface lo inet loopback
 
 auto $BOND_INTERFACES_1
 iface $BOND_INTERFACES_1 inet manual
+	ovs_type OVSPort
+	ovs_bridge vmbr0
 
 auto $BOND_INTERFACES_2
 iface $BOND_INTERFACES_2 inet manual
+	ovs_type OVSPort
+	ovs_bridge vmbr0
 
 auto $LAN_INTERFACE
 iface $LAN_INTERFACE inet manual
+	ovs_type OVSPort
+	ovs_bridge vmbr3
 
 auto $ADMIN_INTERFACE
 iface $ADMIN_INTERFACE inet manual
+	ovs_type OVSPort
+	ovs_bridge vmbr4
     
 # Bond0 pour WAN
 auto bond0
@@ -138,13 +146,13 @@ EOF
     systemctl restart openvswitch-switch
     systemctl restart networking
 
-    echo "Ajout des interfaces aux bridges OVS"
-    ovs-vsctl add-port vmbr4 $ADMIN_INTERFACE
-    ovs-vsctl add-port vmbr3 $LAN_INTERFACE
+    #echo "Ajout des interfaces aux bridges OVS"
+    #ovs-vsctl add-port vmbr4 $ADMIN_INTERFACE
+    #ovs-vsctl add-port vmbr3 $LAN_INTERFACE
 
-    echo "Redémarrage des services réseau... 2/2"
-    systemctl restart openvswitch-switch
-    systemctl restart networking
+    #echo "Redémarrage des services réseau... 2/2"
+    #systemctl restart openvswitch-switch
+    #systemctl restart networking
 
     echo "Configuration Open vSwitch terminée."
     echo "Vérifiez la configuration avec 'ovs-vsctl show' et 'ip a'."
